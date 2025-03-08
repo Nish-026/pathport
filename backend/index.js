@@ -9,7 +9,7 @@ const {authMiddleware}= require("./middleware/authentication")
 app.use(express.json())
 
 app.use(cors({
-    origin: 'https://fletnixv2.netlify.app'
+    origin: '*'
   }));
  
 
