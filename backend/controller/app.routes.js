@@ -1,15 +1,11 @@
 const express = require("express");
 const appRouter = express.Router();
 require("dotenv").config();
-const OpenAI = require("openai");
-const { AzureOpenAI } = require("openai");
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY
 
 appRouter.post("/generate-itinerary", async (req, res) => {
   const { destination, origin, dates, budget, interests, currency } = req.body;
-
-
   const prompt = `Plan a travel itinerary for ${destination} from ${origin} between ${dates.start} and ${dates.end}. The budget is ${currency}${budget}, and the user's interests are: ${interests}. Adjust the number of days and activities based on the duration between ${dates.start} and ${dates.end}. Include activities, landmarks, and restaurants. Ensure the response strictly adheres to the following JSON format:
-
   {
     "itinerary": {
       "general_information": {
@@ -68,53 +64,18 @@ appRouter.post("/generate-itinerary", async (req, res) => {
         "Enjoy!": "Encourage a relaxing and enjoyable experience for the traveler."
       }
     }
-  }`;  
-  // const endpoint = "https://shipthis-openai.openai.azure.com/";  
-  // const apiKey ="ab6a5d9e46674054a11814e365536d7e"  
-  // const apiVersion = "2024-05-01-preview";  
-  // const deployment = "shipthis-openai"
- 
-  // const client = new AzureOpenAI({ endpoint, apiKey, apiVersion, deployment });  
- 
-  // const result = await client.chat.completions.create({  
-  //   messages: [  
-  //                 { role: "system", content: `Plan a travel itinerary for ${destination} from ${origin} between ${dates.start} and ${dates.end}. The budget is ${currency}${budget}, and the user's interests are: ${interests}. Include activities, landmarks, and restaurants.` }  
-  //   ],
-  //   max_tokens: 800,  
-  //   temperature: 0.7,  
-  //   top_p: 0.95,  
-  //   frequency_penalty: 0,  
-  //   presence_penalty: 0,  
-  //   stop: null
-  // });  
- 
-  // console.log(JSON.stringify(result, null, 2));  
+  }`;   
 
-
-
-
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-const genAI = new GoogleGenerativeAI("AIzaSyCGt912No3OMEcqhBObqlIRGBM2OUjpSS8");
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-const result = await model.generateContent(prompt);
-// console.log(result.response.text());
   try {
-
-
-    // const response = await openai.createCompletion({
-    //   model: "text-davinci-003",
-    //   prompt,
-    //   max_tokens: 300,
-    // });
+    const { GoogleGenerativeAI } = require("@google/generative-ai");
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const result = await model.generateContent(prompt);
     let cleanJSON = result.response.text().replace(/```json|```/g, '').trim();
-
-
     let parsedJSON;
     parsedJSON = JSON.parse(cleanJSON);
     res.json({ data: parsedJSON });
   } catch (err) {
-    console.error("Error generating itinerary:", err);
     res.status(500).json({ error: "Error generating itinerary" });
   }
 });

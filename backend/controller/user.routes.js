@@ -6,10 +6,8 @@ const jwt = require('jsonwebtoken');
 const {User} = require('../model/user.model');
 
 userRouter.post('/signup', async (req, res) => {
-  console.log("yesss")
   try {
     const { username,email, password} = req.body;
-
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
@@ -43,7 +41,6 @@ userRouter.post('/login', async (req, res) => {
 
       res.status(200).json({ status:200,message:"login successful",token,username:user.username});
     } catch (error) {
-        console.log(error)
         res.status(500).json({ message: 'Something went wrong',status:500 });
     }
   });

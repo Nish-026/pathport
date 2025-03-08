@@ -8,17 +8,17 @@ const {appRouter}= require("./controller/app.routes")
 const {authMiddleware}= require("./middleware/authentication")
 app.use(express.json())
 
-// app.use(cors({
-//     origin: 'https://fletnixv2.netlify.app'
-//   }));
+app.use(cors({
+    origin: 'https://fletnixv2.netlify.app'
+  }));
  
 
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.setHeader('Access-Control-Allow-Methods', '*');
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//     next();
-// });
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 
 app.get("/test",(req,res)=>{
     res.send({"message":"Welcome to Smart Travel Itinerary Planner"})
